@@ -12,7 +12,7 @@
 <div class="container">
     <div class="row">
         <div class="p-4">
-            <h1>Project Crud With Ajax And Pure JavaScript😍</h1>
+            <h1> مرگ بر آمریکا </h1>
             <hr>
             <form action="{{route('project.store')}}" method="post" class="col-md-5" role="form">
                 @csrf
@@ -44,7 +44,7 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <a class="btn btn-primary form-control" id="send">Sign in</a>
+                        <a class="btn btn-primary form-control" id="send">Submit</a>
                     </div>
                 </div>
 
@@ -72,10 +72,9 @@
                         <td>{{$project->author}}</td>
                         <td>{{$project->status}}</td>
                         <td>
-                            <a href="{{route('project.update', $project->id)}}" class="btn btn-primary">Edit Project</a>
+                            <a class="edit btn btn-primary" id="{{$project->id}}">Edit Project</a>
                         </td>
                         <td>
-{{--                            <a href="{{route('project.destroy', $project->id)}}" class="btn btn-danger" id="deleteRow">Delete Project</a>--}}
                             <a class="delete btn btn-danger" id="{{$project->id}}">Delete Project</a>
                         </td>
                     </tr>
@@ -87,7 +86,7 @@
     </section>
 </div>
 <script>
-
+    ////////////////////////////////////////////////////////////////////////// CREATE
     document.querySelector('#send').onclick = () => {
         let request = new XMLHttpRequest();
         request.open("POST", '/api/project', true);
@@ -113,13 +112,15 @@
         request.send(form);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////
+    /*
+     */
+    ////////////////////////////////////////////////////////////////////////////////// DELETE
 
     document.querySelectorAll('.delete').forEach((e) => {
         e.onclick = () => {
             let request = new XMLHttpRequest();
             // request.setRequestHeader("Accept", "application/json");
-            request.open("DELETE", `api/project/destroy/${e.id}`, true);
+            request.open("DELETE", `api/project/${e.id}`, true);
             // request.onreadystatechange = () => {
             //     if (request.readyState === 4 && request.status === 200) {
             //         console.log(request.response);
@@ -129,10 +130,36 @@
             const form = new FormData();
             form.append('id', id);
             request.send(form);
+            alert('Project successfully Deleted!');
         }
+
+        ////////////////////////////////////////////////////////////////////////////// UPDATE
+
+        document.querySelectorAll('.edit').forEach((e) => {
+            e.onclick = () => {
+                let request = new XMLHttpRequest();
+                request.open("PUT", `api/project/${e.id}`, true);
+                request.setRequestHeader("Accept", "application/json");
+                let id = e.id;
+                var name = document.getElementById('name').value;
+                var author = document.getElementById('author').value;
+                var checkbox = document.getElementById("status");
+                var hiddenInput = document.getElementById("hidden-status");
+                if (checkbox.checked) {
+                    hiddenInput.value = "1";
+                } else {
+                    hiddenInput.value = "0";
+                }
+                const form = new FormData();
+                form.append('id', id);
+                form.append('name', name);
+                form.append('author', author);
+                form.append('status', hiddenInput.value);
+                request.send(form);
+            }
+        })
     });
 
 </script>
 </body>
 </html>
-

@@ -41,9 +41,15 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, $id)
     {
-        //
+        dd($request->name);
+        $project = Project::find($id);
+        $project->update([
+           'name' => $request->name,
+           'author' => $request->author,
+           'status' => $request->status
+        ]);
     }
 
     /**
@@ -51,6 +57,10 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        dd($id);
+        $project = Project::find($id);
+        $project->delete();
+        return response()->json([
+            'message' => 'پروژه با موفقیت حذف شد',
+        ]);
     }
 }
